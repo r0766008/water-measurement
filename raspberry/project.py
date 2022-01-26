@@ -1,4 +1,7 @@
-#ultra sonic sensor
+
+#TODO init toevoegen pubnnub
+#TODO  lower aanpassen van percentage -> cm
+
 import RPi.GPIO as GPIO
 import time
 import sys 
@@ -9,7 +12,8 @@ from pubnub.callbacks import SubscribeCallback
 from datetime import datetime
 
 start = datetime.now()
-
+lower = 30
+higher = 0
 ultrasonic1 = 20
 ultrasonic2 = 21
 delay = 26
@@ -62,7 +66,19 @@ def my_publish_callback(envelope, status):
     else:
 
         pass
+
+class MySubscribeCallback(SubscribeCallback):
     
+
+    def message(self, pubnub, message):
+        #TODO split innit && message
+        user_data = message.message.split("|", 1)
+        lower = user_data[1]
+        print(message.message)
+        print(lower)
+
+pubnub.add_listener(MySubscribeCallback())
+pubnub.subscribe().channels('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2').execute()
 
 breedte = 0
 hoogte = 0
@@ -72,8 +88,6 @@ print("Breedte:",breedte,"cm")
 print("Hoogte:",hoogte,"cm")
 print("Volume:",volume,"m³")
 print("Tijd:",tijd, "s")
-print(start)
-
 print("--------------------")
 
 try:
@@ -81,27 +95,23 @@ try:
         current_time = datetime.now()
         distance = ultrasonic()
         
-        if distance >= 30:
+        if distance <= lower:
             print(round(distance,2), "cm")
             GPIO.output(delay, 1)
-        if distance <= 25:
+
+        if distance >= (lower - 5):
             GPIO.output(delay, 0)
             print(round(distance, 2), "cm")
-        
-        pubnub.publish().channel('p9Mn66G4D5cOmBlSJSFCmSV8uQn2').message(str(distance)).pn_async(my_publish_callback)
-
-
-        
-        print(((current_time - start).total_seconds()/60))
+    
         if (( current_time - start).total_seconds()/60) >= 1 :
             val = (pnconfig.uuid, distance)
             mycursor.execute(sql, val)
             mydb.commit()
             print(mycursor.rowcount, "record inserted.")
+        
 
+        pubnub.publish().channel('p9Mn66G4D5cOmBlSJSFCmSV8uQn2').message(str(distance)).pn_async(my_publish_callback)
 
-
-
-        time.sleep(5)
+        time.sleep(3)
 finally:
     GPIO.cleanup()

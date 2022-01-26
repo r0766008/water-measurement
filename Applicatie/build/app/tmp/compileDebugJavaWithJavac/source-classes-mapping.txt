@@ -1,0 +1,4 @@
+io/flutter/plugins/GeneratedPluginRegistrant.java
+ io.flutter.plugins.GeneratedPluginRegistrant
+com/example/water_measurement/BuildConfig.java
+ com.example.water_measurement.BuildConfig

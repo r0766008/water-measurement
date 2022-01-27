@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pubnub/pubnub.dart';
+import 'package:toggle_switch/toggle_switch.dart';
+//import 'package:regenwaterput/globals/globals.dart' as globals;
 
 class PumpPage extends StatefulWidget {
   const PumpPage({Key? key}) : super(key: key);
@@ -16,20 +18,31 @@ class _PumpPageState extends State<PumpPage> {
           uuid: const UUID('p9Mn66G4D5cOmBlSJSFCmSV8uQn2')));
 
   Widget build(BuildContext context) {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        textStyle: const TextStyle(fontSize: 20), primary: Colors.blue);
+    //final ButtonStyle style = ElevatedButton.styleFrom(
+    //    textStyle: const TextStyle(fontSize: 20), primary: Colors.blue);
 
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const SizedBox(height: 30),
-          ElevatedButton(
-            style: style,
-            onPressed: () {
-              pubnub.publish('pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', '1');
+          ToggleSwitch(
+            customWidths: [90.0, 50.0],
+            cornerRadius: 20.0,
+            activeBgColors: [
+              [Colors.cyan],
+              [Colors.red]
+            ],
+            activeFgColor: Colors.white,
+            inactiveBgColor: Colors.grey,
+            inactiveFgColor: Colors.white,
+            totalSwitches: 2,
+            labels: ['Start', ''],
+            icons: [Icons.play_arrow, Icons.stop],
+            onToggle: (pumpstate) {
+              print('switched to: $pumpstate');
+              pubnub.publish('pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+                  "pump|" + pumpstate.toString());
             },
-            child: const Text('Pump water'),
           ),
         ],
       ),

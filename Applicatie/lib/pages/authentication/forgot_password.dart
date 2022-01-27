@@ -60,18 +60,7 @@ class _ForgotPasswordState extends State<ForgotPasswordPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              foregroundDecoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/login_background.jpg"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              constraints: BoxConstraints(
-                minWidth: MediaQuery.of(context).size.width,
-                minHeight: MediaQuery.of(context).size.height * 0.33,
-              ),
-            ),
+            const SizedBox(height: 100.0,),
             Container(
               transform: Matrix4.translationValues(0.0, -69.0, 0.0),
               child: Column(

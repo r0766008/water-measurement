@@ -14,9 +14,9 @@ class WaterLevelPage extends StatefulWidget {
 }
 
 class _WaterLevelPageState extends State<WaterLevelPage> {
-  double width = 20.0;
-  double length = 30.0;
-  double depth = 40.0;
+  double width = double.parse(globals.width);
+  double length = double.parse(globals.length);
+  double depth = double.parse(globals.depth);
 
   double distance = globals.distance;
   double liter = globals.liter;
@@ -33,7 +33,6 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
             uuid: const UUID('p9Mn66G4D5cOmBlSJSFCmSV8uQn2')));
 
     subscription = pubnub.subscribe(channels: {'p9Mn66G4D5cOmBlSJSFCmSV8uQn2'});
-
     subscription.messages.listen((envelope) async {
       calculate(double.parse(envelope.payload));
     });
@@ -48,8 +47,8 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
 
   void calculate(double newDistance) {
     double maxLiter = (width * length * depth) / 1000;
-    double newLiter = (width * length * (depth - newDistance)) / 1000;
-    int newPercentage = ((newLiter / maxLiter) * 100).round();
+    double newLiter = (width * length * (depth - newDistance.clamp(0, depth))) / 1000;
+    int newPercentage = ((newLiter / maxLiter) * 100).round().clamp(0, 100);
     setState(() {
       distance = newDistance;
       liter = newLiter;
@@ -72,7 +71,7 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
               height: 130.0,
             ),
             Container(
-              margin: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -100,21 +99,21 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                         height: 10.0,
                       ),
                       Text(
-                        'Breedte: ' + width.toString() + " cm",
+                        'Breedte: ' + width.toStringAsFixed(1) + " cm",
                         style: const TextStyle(
                           fontSize: 17.0,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        'Lengte: ' + length.toString() + " cm",
+                        'Lengte: ' + length.toStringAsFixed(1) + " cm",
                         style: const TextStyle(
                           fontSize: 17.0,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        'Diepte: ' + depth.toString() + " cm",
+                        'Diepte: ' + depth.toStringAsFixed(1) + " cm",
                         style: const TextStyle(
                           fontSize: 17.0,
                           color: Colors.white,

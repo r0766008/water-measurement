@@ -13,6 +13,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   liquid_progress_indicator: ^0.4.0
   pubnub: ^4.1.0
+  shared_preferences: ^2.0.12
+  google_place: ^0.4.7
+  firebase_core: ^1.11.0
+  firebase_auth: ^3.3.5
+  provider: ^6.0.2
+  form_field_validator: ^1.1.0
+
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +29,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/login_background.jpg

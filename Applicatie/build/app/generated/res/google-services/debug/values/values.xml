@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">539505970721-7k86pv0luur4ri1ivjgv8ebi5cu2r4dm.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">539505970721</string>
+    <string name="google_api_key" translatable="false">AIzaSyBXBHBUBRthbfBC0FMxM5x2dx3kLv7258o</string>
+    <string name="google_app_id" translatable="false">1:539505970721:android:4bb1cce1697aa311a19d60</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBXBHBUBRthbfBC0FMxM5x2dx3kLv7258o</string>
+    <string name="google_storage_bucket" translatable="false">water-measurement-2ee26.appspot.com</string>
+    <string name="project_id" translatable="false">water-measurement-2ee26</string>
+</resources>

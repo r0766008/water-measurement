@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
-
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:pubnub/pubnub.dart';
-
 import 'package:regenwaterput/globals/globals.dart' as globals;
-import 'package:toggle_switch/toggle_switch.dart';
 
 class WaterLevelPage extends StatefulWidget {
   const WaterLevelPage({Key? key}) : super(key: key);
@@ -163,22 +160,78 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                           color: Colors.white,
                         ),
                       ),
-                      ToggleSwitch(
-                        customWidths: const [90.0, 50.0],
-                        cornerRadius: 20.0,
-                        activeBgColors: const [
-                          [Colors.cyan],
-                          [Colors.red]
-                        ],
-                        activeFgColor: Colors.white,
-                        inactiveBgColor: Colors.grey,
-                        inactiveFgColor: Colors.white,
-                        totalSwitches: 2,
-                        labels: const ['Start', ''],
-                        icons: const [Icons.play_arrow, Icons.stop],
-                        onToggle: (pumpstate) {
+                      const SizedBox(
+                        height: 20.0,
+                      ),
+                      const Text(
+                        'Instellingen',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      const Text(
+                        "Automatich/manueel:",
+                        style: TextStyle(
+                          fontSize: 17.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      FlutterSwitch(
+                        width: 70.0,
+                        height: 30.0,
+                        valueFontSize: 12.0,
+                        toggleSize: 20.0,
+                        value: globals.pumpstatus,
+                        borderRadius: 30.0,
+                        padding: 6.0,
+                        showOnOff: true,
+                        onToggle: (val) {
+                          setState(() {
+                            globals.pumpstatus = val;
+                          });
+                          print(globals.pumpstatus);
                           pubnub.publish('pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
-                              "pump|" + pumpstate.toString());
+                              "pumpstate|" + globals.pumpstatus.toString());
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      const Text(
+                        "pomp aan/uit:",
+                        style: TextStyle(
+                          fontSize: 17.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      FlutterSwitch(
+                        width: 70.0,
+                        height: 30.0,
+                        valueFontSize: 12.0,
+                        toggleSize: 20.0,
+                        value: globals.pumpAutomatic,
+                        borderRadius: 30.0,
+                        padding: 6.0,
+                        showOnOff: true,
+                        onToggle: (val1) {
+                          setState(() {
+                            globals.pumpAutomatic = val1;
+                          });
+                          print(globals.pumpAutomatic);
+                          pubnub.publish(
+                              'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+                              "pumpAutomatic|" +
+                                  globals.pumpAutomatic.toString());
                         },
                       ),
                     ],

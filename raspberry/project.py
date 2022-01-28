@@ -11,22 +11,26 @@ from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback 
 from datetime import datetime
 
-#GPIO.cleanup()
+GPIO.setwarnings(False)
 
-
-start = datetime.now()
+#?----------------
+insert_time = 1 
+delay_time = 3
+#?----------------
 
 ultrasonic1 = 20
 ultrasonic2 = 21
 delay = 26
 user_data= 0
-
 width = 20
 length = 30
-depth = 40
-bufferLow = 10
-bufferHigh = 80
+depth = 17.5
+bufferLow = ((20/100) * depth)
+bufferHigh = ((80/100) * depth)
 pumpstate = "false"
+pumpAutomatic = "true"
+
+start = datetime.now()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(ultrasonic2, GPIO.IN)
@@ -39,14 +43,14 @@ pnconfig.publish_key = 'pub-c-d79f4642-99a1-44fa-9ece-708cde163413'
 pnconfig.uuid = 'p9Mn66G4D5cOmBlSJSFCmSV8uQn2'
 pubnub = PubNub(pnconfig)
 
-mydb = mysql.connector.connect(
+mydb2 = mysql.connector.connect(
   host="localhost",
   database="waterput",
   user="pi",
   password="raspberry"
 )
 
-mydb2 = mysql.connector.connect(
+mydb = mysql.connector.connect(
   host="sql11.freemysqlhosting.net",
   database="sql11468395",
   user="sql11468395",
@@ -54,7 +58,7 @@ mydb2 = mysql.connector.connect(
 ) 
 
 mycursor = mydb.cursor()
-sql = "INSERT INTO data (PubNub_ID, Distance) VALUES (%s, %s)"
+sql = "INSERT INTO measurements (pubnub_id, distance) VALUES (%s, %s)"
 
 def ultrasonic():
     GPIO.output(ultrasonic1,1)
@@ -74,61 +78,59 @@ def ultrasonic():
     return distance
 
 def my_publish_callback(envelope, status):
-
     # Check whether request successfully completed or not
-
     if not status.is_error():
-
         pass  # Message successfully published to specified channel.
-
     else:
-
         pass
 
-class MySubscribeCallback(SubscribeCallback):
-    
 
+class MySubscribeCallback(SubscribeCallback):
     def message(self, pubnub, message):
         #! split innit && message
         if message.message:
             user_data = message.message.split("|")
-            if user_data[0] == "init":
+            global bufferLow, width, length, depth, bufferHigh,pumpstate, pumpAutomatic
+            if user_data[0] == "init":                
                 length = user_data[4]
                 width = user_data[2]
                 depth = user_data[6]
-                bufferLow = user_data[8]
-                bufferHigh = user_data[10]
+                bufferLow = ((user_data[8])/100)*depth
+                bufferHigh = ((user_data[10])/100)*depth
+                pumpAutomatic = user_data[12]
+                pumpstate = user_data[14]
                 print(width,"cm")
                 print(length,"cm")
                 print(depth)
+                print("----------")
                 print(bufferLow)
                 print(bufferHigh)
+                print("----------")
+                print(pumpAutomatic)
+                print(pumpstate)
 
- 
             else:
                 if user_data[0] == "length":
                     length = user_data[1]
-                    print(user_data[1])
-                elif user_data[0] == "depth":
+                    print(user_data[1])                
+                elif user_data[0] == "depth":                    
                     depth = user_data[1]
                     print(user_data[1])
                 elif user_data[0] == "bufferLow":
                     bufferLow = user_data[1]
-                    print(user_data[1])
-                elif user_data[0] == "bufferHigh":
+                    print(user_data[1])                    
+                elif user_data[0] == "bufferHigh":                    
                     bufferHigh = user_data[1]
                     print(user_data[1])
-                elif user_data[0] == "width":
+                elif user_data[0] == "width":                    
                     width = user_data[1]
                     print(user_data[1])
                 elif user_data[0] == "pumpstate":
-                    pumpstate = str(user_data[1])
-                    
-                    
-            
+                    pumpstate = user_data[1]
+                    print(pumpstate)
+                elif user_data[0] == "pumpAutomatic":
+                    pumpAutomatic = user_data[1]
 
-
-            
 pubnub.add_listener(MySubscribeCallback())
 pubnub.subscribe().channels(['settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2']).execute()
 
@@ -137,37 +139,38 @@ try:
     while True:
         current_time = datetime.now()
         distance = ultrasonic()
-        
-        if pumpstate == "false":
-        #if distance <= bufferLow - 5: #and pumpstate == '1':
-            print(pumpstate)
-            print(round(distance,2), "cm")
-            print("pump is off")
-            GPIO.output(delay, 1)
 
-        if pumpstate == "true":
-        #if distance >= (bufferLow):# or pumpstate == '0':
-            print(pumpstate)
-            GPIO.output(delay, 0)
-            print("pump is on")
-            print(round(distance, 2), "cm")
-    
+        print("distance:", round(distance, 3))
+        print("buffer:", depth - bufferLow)
+        print("buffer high:",depth - bufferHigh)
+        print('------------------------')
+
+        if pumpAutomatic == "true":
+            if distance <= depth - (float(bufferLow) + 3):
+                GPIO.output(delay, 1)
+
+            elif distance >= depth - float(bufferLow):
+                GPIO.output(delay, 0)
+            
+        elif pumpAutomatic == "false":
+            if pumpstate == "true":
+                GPIO.output(delay, 0)
+            
+            elif pumpstate == "false":
+                GPIO.output(delay, 1)
         
-        #! after 1min, insert record to DB
-        if (( current_time - start).total_seconds()/60) >= 1 :
+        #TODO buffer onder - melding, aan het bijpompen
+        #TODO buffer hoger - melding
+
+        if (( current_time - start).total_seconds()/60) >= insert_time :
             val = (pnconfig.uuid, distance)
             mycursor.execute(sql, val)
             mydb.commit()
             print(mycursor.rowcount, "record inserted.")
             start = datetime.now()
         
-
-        #!send distance to App
         pubnub.publish().channel('p9Mn66G4D5cOmBlSJSFCmSV8uQn2').message(str(distance)).pn_async(my_publish_callback)
-
-
-
-        time.sleep(3)
+        time.sleep(delay_time)
 
 except KeyboardInterrupt:
     pass

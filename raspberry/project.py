@@ -11,12 +11,22 @@ from pubnub.pubnub import PubNub
 from pubnub.callbacks import SubscribeCallback 
 from datetime import datetime
 
+#GPIO.cleanup()
+
+
 start = datetime.now()
-lower = 30
-higher = 0
+
 ultrasonic1 = 20
 ultrasonic2 = 21
 delay = 26
+user_data= 0
+
+width = 20
+length = 30
+depth = 40
+bufferLow = 10
+bufferHigh = 80
+pumpstate = "false"
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(ultrasonic2, GPIO.IN)
@@ -31,10 +41,18 @@ pubnub = PubNub(pnconfig)
 
 mydb = mysql.connector.connect(
   host="localhost",
+  database="waterput",
   user="pi",
-  password="raspberry",
-  database="waterput"
+  password="raspberry"
 )
+
+mydb2 = mysql.connector.connect(
+  host="sql11.freemysqlhosting.net",
+  database="sql11468395",
+  user="sql11468395",
+  password="llhnxj541p"
+) 
+
 mycursor = mydb.cursor()
 sql = "INSERT INTO data (PubNub_ID, Distance) VALUES (%s, %s)"
 
@@ -71,47 +89,87 @@ class MySubscribeCallback(SubscribeCallback):
     
 
     def message(self, pubnub, message):
-        #TODO split innit && message
-        user_data = message.message.split("|", 1)
-        lower = user_data[1]
-        print(message.message)
-        print(lower)
+        #! split innit && message
+        if message.message:
+            user_data = message.message.split("|")
+            if user_data[0] == "init":
+                length = user_data[4]
+                width = user_data[2]
+                depth = user_data[6]
+                bufferLow = user_data[8]
+                bufferHigh = user_data[10]
+                print(width,"cm")
+                print(length,"cm")
+                print(depth)
+                print(bufferLow)
+                print(bufferHigh)
 
+ 
+            else:
+                if user_data[0] == "length":
+                    length = user_data[1]
+                    print(user_data[1])
+                elif user_data[0] == "depth":
+                    depth = user_data[1]
+                    print(user_data[1])
+                elif user_data[0] == "bufferLow":
+                    bufferLow = user_data[1]
+                    print(user_data[1])
+                elif user_data[0] == "bufferHigh":
+                    bufferHigh = user_data[1]
+                    print(user_data[1])
+                elif user_data[0] == "width":
+                    width = user_data[1]
+                    print(user_data[1])
+                elif user_data[0] == "pumpstate":
+                    pumpstate = str(user_data[1])
+                    
+                    
+            
+
+
+            
 pubnub.add_listener(MySubscribeCallback())
-pubnub.subscribe().channels('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2').execute()
+pubnub.subscribe().channels(['settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2']).execute()
 
-breedte = 0
-hoogte = 0
-volume = 0
-tijd = 0
-print("Breedte:",breedte,"cm")
-print("Hoogte:",hoogte,"cm")
-print("Volume:",volume,"m³")
-print("Tijd:",tijd, "s")
-print("--------------------")
 
 try:
     while True:
         current_time = datetime.now()
         distance = ultrasonic()
         
-        if distance <= lower:
+        if pumpstate == "false":
+        #if distance <= bufferLow - 5: #and pumpstate == '1':
+            print(pumpstate)
             print(round(distance,2), "cm")
+            print("pump is off")
             GPIO.output(delay, 1)
 
-        if distance >= (lower - 5):
+        if pumpstate == "true":
+        #if distance >= (bufferLow):# or pumpstate == '0':
+            print(pumpstate)
             GPIO.output(delay, 0)
+            print("pump is on")
             print(round(distance, 2), "cm")
     
+        
+        #! after 1min, insert record to DB
         if (( current_time - start).total_seconds()/60) >= 1 :
             val = (pnconfig.uuid, distance)
             mycursor.execute(sql, val)
             mydb.commit()
             print(mycursor.rowcount, "record inserted.")
+            start = datetime.now()
         
 
+        #!send distance to App
         pubnub.publish().channel('p9Mn66G4D5cOmBlSJSFCmSV8uQn2').message(str(distance)).pn_async(my_publish_callback)
 
+
+
         time.sleep(3)
+
+except KeyboardInterrupt:
+    pass
 finally:
     GPIO.cleanup()

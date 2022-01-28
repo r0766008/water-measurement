@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:pubnub/pubnub.dart';
 import 'package:regenwaterput/pages/authentication/sign_in.dart';
-import 'package:regenwaterput/pages/pump.dart';
+import 'package:regenwaterput/pages/graphs.dart';
 import 'package:regenwaterput/pages/settings.dart';
 import 'package:regenwaterput/pages/waterlevel.dart';
 import 'package:regenwaterput/services/authentication.dart';
@@ -84,17 +84,6 @@ class AuthenticationWrapper extends StatefulWidget {
 }
 
 class _AuthenticationWrapperState extends State<AuthenticationWrapper> {
-  late SharedPreferences prefs;
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then((value) {
-      prefs = value;
-      prefs.setBool('signing_in', true);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
@@ -117,12 +106,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
 
   static const List<Widget> _pages = <Widget>[
-    PumpPage(),
+    GraphPage(),
     WaterLevelPage(),
     SettingsPage()
   ];
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
     setState(() {
       _selectedIndex = index;
     });
@@ -137,8 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.power_settings_new),
-            label: 'Pomp',
+            icon: Icon(Icons.auto_graph),
+            label: 'Grafieken',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.speed),
@@ -155,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: Colors.black87,
         child: Center(
-          child: _pages.elementAt(_selectedIndex),
+          child: _pages[_selectedIndex],
         ),
       ),
     );

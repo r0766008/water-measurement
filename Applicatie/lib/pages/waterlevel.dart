@@ -5,6 +5,7 @@ import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:pubnub/pubnub.dart';
 
 import 'package:regenwaterput/globals/globals.dart' as globals;
+import 'package:toggle_switch/toggle_switch.dart';
 
 class WaterLevelPage extends StatefulWidget {
   const WaterLevelPage({Key? key}) : super(key: key);
@@ -14,6 +15,12 @@ class WaterLevelPage extends StatefulWidget {
 }
 
 class _WaterLevelPageState extends State<WaterLevelPage> {
+  var pubnub = PubNub(
+      defaultKeyset: Keyset(
+          subscribeKey: 'sub-c-91c29a42-7e21-11ec-8e41-c2c95df3c49a',
+          publishKey: 'pub-c-d79f4642-99a1-44fa-9ece-708cde163413',
+          uuid: const UUID('p9Mn66G4D5cOmBlSJSFCmSV8uQn2')));
+
   double width = double.parse(globals.width);
   double length = double.parse(globals.length);
   double depth = double.parse(globals.depth);
@@ -26,12 +33,6 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
 
   @override
   void initState() {
-    var pubnub = PubNub(
-        defaultKeyset: Keyset(
-            subscribeKey: 'sub-c-91c29a42-7e21-11ec-8e41-c2c95df3c49a',
-            publishKey: 'pub-c-d79f4642-99a1-44fa-9ece-708cde163413',
-            uuid: const UUID('p9Mn66G4D5cOmBlSJSFCmSV8uQn2')));
-
     subscription = pubnub.subscribe(channels: {'p9Mn66G4D5cOmBlSJSFCmSV8uQn2'});
     subscription.messages.listen((envelope) async {
       calculate(double.parse(envelope.payload));
@@ -46,8 +47,10 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
   }
 
   void calculate(double newDistance) {
-    double maxLiter = (width * length * depth) / 1000;
-    double newLiter = (width * length * (depth - newDistance.clamp(0, depth))) / 1000;
+    const double pi = 3.1415926535897932;
+    double maxLiter = (pi * (length * length) * depth) / 1000;
+    double newLiter =
+        (pi * (length * length) * (depth - newDistance.clamp(0, depth))) / 1000;
     int newPercentage = ((newLiter / maxLiter) * 100).round().clamp(0, 100);
     setState(() {
       distance = newDistance;
@@ -159,6 +162,24 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                           fontSize: 17.0,
                           color: Colors.white,
                         ),
+                      ),
+                      ToggleSwitch(
+                        customWidths: const [90.0, 50.0],
+                        cornerRadius: 20.0,
+                        activeBgColors: const [
+                          [Colors.cyan],
+                          [Colors.red]
+                        ],
+                        activeFgColor: Colors.white,
+                        inactiveBgColor: Colors.grey,
+                        inactiveFgColor: Colors.white,
+                        totalSwitches: 2,
+                        labels: const ['Start', ''],
+                        icons: const [Icons.play_arrow, Icons.stop],
+                        onToggle: (pumpstate) {
+                          pubnub.publish('pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+                              "pump|" + pumpstate.toString());
+                        },
                       ),
                     ],
                   ),

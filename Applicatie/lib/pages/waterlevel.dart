@@ -239,7 +239,7 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                             height: 10.0,
                           ),
                           const Text(
-                            "pomp aan/uit:",
+                            "Pomp aan/uit:",
                             style: TextStyle(
                               fontSize: 17.0,
                               color: Colors.white,

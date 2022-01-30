@@ -6,7 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:regenwaterput/globals/globals.dart' as globals;
 
 class MeasurementsPage extends StatefulWidget {
-  const MeasurementsPage({Key? key}) : super(key: key);
+  final Function function;
+  const MeasurementsPage({Key? key, required this.function}) : super(key: key);
 
   @override
   _MeasurementsPageState createState() => _MeasurementsPageState();
@@ -14,6 +15,11 @@ class MeasurementsPage extends StatefulWidget {
 
 class _MeasurementsPageState extends State<MeasurementsPage> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController widthController = TextEditingController();
+  final TextEditingController lengthController = TextEditingController();
+  final TextEditingController depthController = TextEditingController();
 
   String width = double.parse(globals.width).toStringAsFixed(1);
   String length = double.parse(globals.length).toStringAsFixed(1);
@@ -35,110 +41,158 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
     pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'width|' + width);
     pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'length|' + length);
     pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'depth|' + depth);
+    widget.function();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'Afmetingen',
-              style: TextStyle(
-                  fontSize: 28.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-            Card(
-              elevation: 4.0,
-              margin: const EdgeInsets.fromLTRB(0, 8.0, 0, 16.0),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                      padding: const EdgeInsets.only(top: 8, left: 8),
-                      child: const Text(
-                        'Breedte:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      initialValue: width,
-                      onChanged: (text) {
-                        width = text;
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Breedte',
-                      ),
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.only(top: 8, left: 8),
-                      child: const Text(
-                        'Lengte:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: TextFormField(
-                      initialValue: length,
-                      onChanged: (text) {
-                        length = text;
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Lengte',
-                      ),
-                    ),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.only(top: 8, left: 8),
-                      child: const Text(
-                        'Diepte:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 8, bottom: 16),
-                    child: TextFormField(
-                      initialValue: depth,
-                      onChanged: (text) {
-                        depth = text;
-                      },
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Diepte',
-                      ),
-                    ),
-                  ),
-                  _buildDivider(),
-                  Container(
-                    alignment: Alignment.center,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(fontSize: 20)),
-                      onPressed: () {
-                        save();
-                      },
-                      child: const Text('Opslaan'),
-                    ),
-                  ),
-                ],
+    widthController.text = globals.width;
+    lengthController.text = globals.length;
+    depthController.text = globals.depth;
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.only(top: 40),
+          height: 60,
+          child: Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  widget.function();
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(22),
+                    child: const Icon(
+                      Icons.arrow_left,
+                      color: Colors.white,
+                    )),
               ),
-            ),
-          ],
+              Container(
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                child: const Text(
+                  'Afmetingen',
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Card(
+                  elevation: 4.0,
+                  margin: const EdgeInsets.fromLTRB(0, 8.0, 0, 16.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 16),
+                          child: TextFormField(
+                            controller: widthController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            decoration: getTextFieldDecoration('Breedte'),
+                            validator: (value) => value!.isEmpty
+                                ? 'Vul de breedte in'
+                                : (RegExp(r'^[0-9]+(,[0-9]{3})*(\.[0-9]+)*$')
+                                        .hasMatch(value)
+                                    ? null
+                                    : 'De breedte heeft geen geldige getalwaarde'),
+                            keyboardType: TextInputType.number,
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 16),
+                          child: TextFormField(
+                            controller: lengthController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            decoration: getTextFieldDecoration('Lengte'),
+                            validator: (value) => value!.isEmpty
+                                ? 'Vul de lengte in'
+                                : (RegExp(r'^[0-9]+(,[0-9]{3})*(\.[0-9]+)*$')
+                                        .hasMatch(value)
+                                    ? null
+                                    : 'De lengte heeft geen geldige getalwaarde'),
+                            keyboardType: TextInputType.number,
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 16),
+                          child: TextFormField(
+                            controller: depthController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            decoration: getTextFieldDecoration('Diepte'),
+                            validator: (value) => value!.isEmpty
+                                ? 'Vul de diepte in'
+                                : (RegExp(r'^[0-9]+(,[0-9]{3})*(\.[0-9]+)*$')
+                                        .hasMatch(value)
+                                    ? null
+                                    : 'De diepte heeft geen geldige getalwaarde'),
+                            keyboardType: TextInputType.number,
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        _buildDivider(),
+                        Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 16),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              textStyle: const TextStyle(fontSize: 20),
+                              minimumSize: const Size.fromHeight(50),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                save();
+                              }
+                            },
+                            child: const Text('Opslaan'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
+  }
+
+  bool isNumeric(String s) {
+    // ignore: unnecessary_null_comparison
+    if (s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
   }
 
   Container _buildDivider() {
@@ -149,6 +203,42 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
       width: double.infinity,
       height: 1.0,
       color: Colors.grey.shade400,
+    );
+  }
+
+  InputDecoration getTextFieldDecoration(String label) {
+    return InputDecoration(
+      labelStyle: const TextStyle(
+        color: Colors.grey,
+      ),
+      labelText: label,
+      fillColor: Colors.grey,
+      contentPadding: const EdgeInsets.only(left: 30.0, right: 15.0),
+      errorStyle: const TextStyle(color: Colors.red),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100.0),
+        borderSide: const BorderSide(
+          color: Colors.grey,
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100.0),
+        borderSide: const BorderSide(
+          color: Colors.grey,
+        ),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100.0),
+        borderSide: const BorderSide(
+          color: Colors.red,
+        ),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100.0),
+        borderSide: const BorderSide(
+          color: Colors.red,
+        ),
+      ),
     );
   }
 }

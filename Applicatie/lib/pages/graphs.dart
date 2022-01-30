@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:regenwaterput/models/Measurement.dart';
 import 'package:http/http.dart' as http;
 import 'package:regenwaterput/globals/globals.dart' as globals;
-import 'package:weather/weather.dart';
-
-enum AppState { NOT_DOWNLOADED, DOWNLOADING, FINISHED_DOWNLOADING }
 
 Future<List<Measurement>> fetchMeasurement() async {
   final response = await http.get(
@@ -32,13 +29,6 @@ class GraphPage extends StatefulWidget {
 }
 
 class _GraphPageState extends State<GraphPage> {
-  String key = '1fdd8dd677917394a0e2ff370ba3d979';
-  late WeatherFactory ws;
-  List<Weather> _data = [];
-  AppState _state = AppState.NOT_DOWNLOADED;
-  double lat = 51.156;
-  double lon = 5.456;
-
   late Future<List<Measurement>> futureMeasurement;
   List<FlSpot> distances = [];
   List<Color> gradientColors = [
@@ -51,119 +41,7 @@ class _GraphPageState extends State<GraphPage> {
   void initState() {
     super.initState();
     futureMeasurement = fetchMeasurement();
-    ws = WeatherFactory(key);
   }
-
-  void queryForecast() async {
-    /// Removes keyboard
-    FocusScope.of(context).requestFocus(FocusNode());
-    setState(() {
-      _state = AppState.DOWNLOADING;
-    });
-
-    List<Weather> forecasts = await ws.fiveDayForecastByLocation(lat, lon);
-    setState(() {
-      _data = forecasts;
-      _state = AppState.FINISHED_DOWNLOADING;
-    });
-  }
-
-  void queryWeather() async {
-    /// Removes keyboard
-    FocusScope.of(context).requestFocus(FocusNode());
-
-    setState(() {
-      _state = AppState.DOWNLOADING;
-    });
-
-    Weather weather = await ws.currentWeatherByLocation(lat, lon);
-    setState(() {
-      _data = [weather];
-      _state = AppState.FINISHED_DOWNLOADING;
-    });
-  }
-
-  Widget contentFinishedDownload() {
-    return Center(
-      child: ListView.separated(
-        itemCount: _data.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_data[index].toString()),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return Divider();
-        },
-      ),
-    );
-  }
-
-  Widget contentDownloading() {
-    return Container(
-      margin: EdgeInsets.all(25),
-      child: Column(children: [
-        Text(
-          'Fetching Weather...',
-          style: TextStyle(fontSize: 20),
-        ),
-        Container(
-            margin: EdgeInsets.only(top: 50),
-            child: Center(child: CircularProgressIndicator(strokeWidth: 10)))
-      ]),
-    );
-  }
-
-  Widget contentNotDownloaded() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'Press the button to download the Weather forecast',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buttons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.all(5),
-          child: TextButton(
-            child: Text(
-              'Fetch weather',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: queryWeather,
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue)),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.all(5),
-          child: TextButton(
-            child: Text(
-              'Fetch forecast',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: queryForecast,
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue)),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _resultView() => _state == AppState.FINISHED_DOWNLOADING
-      ? contentFinishedDownload()
-      : _state == AppState.DOWNLOADING
-          ? contentDownloading()
-          : contentNotDownloaded();
 
   int calculate(double value) {
     double maxLiter = (double.parse(globals.width) *
@@ -180,12 +58,46 @@ class _GraphPageState extends State<GraphPage> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.only(top: 40),
+          height: 60,
+          child: Row(
+            children: <Widget>[
+              const SizedBox(
+                width: 68,
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                child: const Text(
+                  'Grafieken',
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 40,
+        ),
+        Container(
+          margin: const EdgeInsets.only(left: 16),
+          alignment: Alignment.centerLeft,
+          child: const Text(
+            'Waterniveau per uur:',
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 15),
         FutureBuilder<List<Measurement>>(
           future: futureMeasurement,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              print(snapshot.data!.length);
               for (int i = snapshot.data!.length - 1; i >= 0; i--) {
                 distances.add(FlSpot(
                     (snapshot.data!.length - i - 1).toDouble(),
@@ -208,20 +120,12 @@ class _GraphPageState extends State<GraphPage> {
                 ),
               );
             } else {
-              return const Center(child: CircularProgressIndicator());
+              return const SizedBox(
+                  height: 250,
+                  child: Center(child: CircularProgressIndicator()));
             }
           },
         ),
-        _buttons(),
-        Text(
-          'Output:',
-          style: TextStyle(fontSize: 20),
-        ),
-        Divider(
-          height: 20.0,
-          thickness: 2.0,
-        ),
-        SafeArea(child: _resultView())
       ],
     );
   }

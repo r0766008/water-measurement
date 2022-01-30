@@ -220,17 +220,19 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                             height: 30.0,
                             valueFontSize: 12.0,
                             toggleSize: 20.0,
-                            value: globals.pumpstatus,
+                            value: globals.pumpAutomatic,
                             borderRadius: 30.0,
                             padding: 6.0,
                             showOnOff: true,
-                            onToggle: (val) {
+                            onToggle: (val1) {
                               setState(() {
-                                globals.pumpstatus = val;
+                                globals.pumpAutomatic = val1;
                               });
+                              print(globals.pumpAutomatic);
                               pubnub.publish(
                                   'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
-                                  "pumpstate|" + globals.pumpstatus.toString());
+                                  "pumpAutomatic|" +
+                                      globals.pumpAutomatic.toString());
                             },
                           ),
                           const SizedBox(
@@ -251,18 +253,18 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                             height: 30.0,
                             valueFontSize: 12.0,
                             toggleSize: 20.0,
-                            value: globals.pumpAutomatic,
+                            value: globals.pumpstatus,
                             borderRadius: 30.0,
                             padding: 6.0,
                             showOnOff: true,
-                            onToggle: (val1) {
+                            onToggle: (val) {
                               setState(() {
-                                globals.pumpAutomatic = val1;
+                                globals.pumpstatus = val;
                               });
+                              print(globals.pumpstatus);
                               pubnub.publish(
                                   'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
-                                  "pumpAutomatic|" +
-                                      globals.pumpAutomatic.toString());
+                                  "pumpstate|" + globals.pumpstatus.toString());
                             },
                           ),
                         ],

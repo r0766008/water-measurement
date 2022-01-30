@@ -30,6 +30,7 @@ void main() async {
   globals.bufferHigh = (prefs.getString('bufferHigh') ?? "90");
   globals.location = (prefs.getString('location') ?? "Geel, Belgium");
   globals.distance = double.parse((prefs.getString('depth') ?? "40.0"));
+
   pubnub.publish(
       'settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
       'init|width|' +
@@ -41,7 +42,11 @@ void main() async {
           "|bufferLow|" +
           globals.bufferLow +
           "|bufferHigh|" +
-          globals.bufferHigh);
+          globals.bufferHigh +
+          "|pumpAutomatic|" +
+          globals.pumpAutomatic.toString() +
+          "|pumpstatus|" +
+          globals.pumpstatus.toString());
   runApp(const MyApp());
 }
 

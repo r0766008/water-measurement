@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "539505970721",
-    "project_id": "water-measurement-2ee26",
-    "storage_bucket": "water-measurement-2ee26.appspot.com"
+    "project_number": "338145640984",
+    "project_id": "water-measurement-2db1e",
+    "storage_bucket": "water-measurement-2db1e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:539505970721:android:4bb1cce1697aa311a19d60",
+        "mobilesdk_app_id": "1:338145640984:android:aaa9615886cc518000396d",
         "android_client_info": {
           "package_name": "com.example.water_measurement"
         }
       },
       "oauth_client": [
         {
-          "client_id": "539505970721-7k86pv0luur4ri1ivjgv8ebi5cu2r4dm.apps.googleusercontent.com",
+          "client_id": "338145640984-tjn2rm5uqchvh9kfkk4srmkpk0uijoia.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBXBHBUBRthbfBC0FMxM5x2dx3kLv7258o"
+          "current_key": "AIzaSyDoVRtMgDfmE30qtkJYa1A2c3mnrsnStgs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "539505970721-7k86pv0luur4ri1ivjgv8ebi5cu2r4dm.apps.googleusercontent.com",
+              "client_id": "338145640984-tjn2rm5uqchvh9kfkk4srmkpk0uijoia.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -228,7 +228,6 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                               setState(() {
                                 globals.pumpAutomatic = val1;
                               });
-                              print(globals.pumpAutomatic);
                               pubnub.publish(
                                   'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
                                   "pumpAutomatic|" +
@@ -261,7 +260,6 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                               setState(() {
                                 globals.pumpstatus = val;
                               });
-                              print(globals.pumpstatus);
                               pubnub.publish(
                                   'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
                                   "pumpstate|" + globals.pumpstatus.toString());

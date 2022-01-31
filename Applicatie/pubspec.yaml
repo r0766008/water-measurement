@@ -14,8 +14,12 @@ dependencies:
   pubnub: ^4.1.0
   shared_preferences: ^2.0.12
   google_place: ^0.4.7
+
   firebase_core: ^1.11.0
   firebase_auth: ^3.3.5
+  firebase_messaging: ^11.2.6
+  flutter_local_notifications: ^9.2.0
+  
   provider: ^6.0.2
   form_field_validator: ^1.1.0
   flutter_switch: ^0.3.2

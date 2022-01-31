@@ -3,6 +3,7 @@ import 'package:pubnub/pubnub.dart';
 import 'package:regenwaterput/pages/settings/location.dart';
 import 'package:regenwaterput/pages/settings/measurements.dart';
 import 'package:regenwaterput/globals/globals.dart' as globals;
+import 'package:regenwaterput/pages/settings/roof.dart';
 import 'package:regenwaterput/services/authentication.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +45,9 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     _pages = <Widget>[
       MeasurementsPage(
+        function: mainPage,
+      ),
+      RoofPage(
         function: mainPage,
       ),
       LocationPage(
@@ -125,6 +129,22 @@ class _SettingsPageState extends State<SettingsPage> {
                           leading: Container(
                             padding: const EdgeInsets.only(top: 5.0),
                             child: const Icon(
+                              Icons.roofing,
+                              color: Colors.green,
+                            ),
+                          ),
+                          title: const Text('Dakoppervlakte'),
+                          subtitle: Text(globals.roof.toString() + "\u33A1"),
+                          trailing: const Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            _onItemTapped(2);
+                          },
+                        ),
+                        _buildDivider(),
+                        ListTile(
+                          leading: Container(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: const Icon(
                               Icons.location_city,
                               color: Colors.green,
                             ),
@@ -133,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           subtitle: Text(globals.location.toString()),
                           trailing: const Icon(Icons.keyboard_arrow_right),
                           onTap: () {
-                            _onItemTapped(2);
+                            _onItemTapped(3);
                           },
                         ),
                       ],

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:regenwaterput/models/Measurement.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:regenwaterput/globals/globals.dart' as globals;
 
@@ -29,6 +30,9 @@ class GraphPage extends StatefulWidget {
 }
 
 class _GraphPageState extends State<GraphPage> {
+  String key = '1fdd8dd677917394a0e2ff370ba3d979';
+  double totalRain = 0;
+
   late Future<List<Measurement>> futureMeasurement;
   List<FlSpot> distances = [];
   List<Color> gradientColors = [
@@ -37,10 +41,34 @@ class _GraphPageState extends State<GraphPage> {
   ];
   bool showAvg = false;
 
+  void queryForecast() async {
+    var request = http.Request(
+        'GET',
+        Uri.parse(
+            'https://api.openweathermap.org/data/2.5/forecast?q=' + globals.location + '&appid=' +
+                key));
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      String jsonResult = await response.stream.bytesToString();
+      List<String> newJsonResult =
+          jsonResult.toString().split("rain\":{\"3h\":");
+      double newRain = 0;
+      for (var i = 1; i < newJsonResult.length - 1; i++) {
+        newRain += double.parse(newJsonResult[i].split("}")[0]);
+      }
+      setState(() {
+        totalRain = newRain;
+      });
+    } else {
+      debugPrint(response.reasonPhrase);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     futureMeasurement = fetchMeasurement();
+    queryForecast();
   }
 
   int calculate(double value) {
@@ -53,6 +81,18 @@ class _GraphPageState extends State<GraphPage> {
             (double.parse(globals.depth) - value)) /
         1000;
     return ((newLiter / maxLiter) * 100).round().clamp(0, 100);
+  }
+
+  double calculateLiter() {
+    return (double.parse(globals.roof) * totalRain);
+  }
+
+  int calculatePercentage() {
+    double maxLiter = (double.parse(globals.width) *
+            double.parse(globals.length) *
+            double.parse(globals.depth)) /
+        1000;
+    return ((calculateLiter() / maxLiter) * 100).round().clamp(0, 100);
   }
 
   @override
@@ -70,7 +110,7 @@ class _GraphPageState extends State<GraphPage> {
               Container(
                 padding: const EdgeInsets.only(top: 20, bottom: 20),
                 child: const Text(
-                  'Grafieken',
+                  'Informatie',
                   overflow: TextOverflow.visible,
                   style: TextStyle(
                       color: Colors.white,
@@ -125,6 +165,51 @@ class _GraphPageState extends State<GraphPage> {
                   child: Center(child: CircularProgressIndicator()));
             }
           },
+        ),
+        Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(left: 16, top: 16),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                'Weerbericht komende 5 dagen:',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16, top: 16),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Neerslag: ' + totalRain.toStringAsFixed(1) + " mm",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Liter: ' + calculateLiter().toStringAsFixed(1) + " l",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 16),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Bijkomend percentage: ' + calculatePercentage().toStringAsFixed(1) + " %",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,),
+              ),
+            ),
+          ],
         ),
       ],
     );

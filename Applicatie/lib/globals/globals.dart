@@ -7,6 +7,8 @@ String depth = "40.0";
 String bufferLow = "10";
 String bufferHigh = "90";
 
+String roof = "30";
+
 double distance = 0.0;
 double liter = 0.0;
 int percentage = 0;

@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:pubnub/pubnub.dart';
 import 'package:regenwaterput/pages/authentication/sign_in.dart';
-import 'package:regenwaterput/pages/graphs.dart';
+import 'package:regenwaterput/pages/info.dart';
 import 'package:regenwaterput/pages/settings.dart';
 import 'package:regenwaterput/pages/waterlevel.dart';
 import 'package:regenwaterput/services/authentication.dart';
@@ -56,6 +56,7 @@ Future<void> main() async {
   globals.bufferHigh = (prefs.getString('bufferHigh') ?? "90");
   globals.location = (prefs.getString('location') ?? "Geel, Belgium");
   globals.distance = double.parse((prefs.getString('depth') ?? "40.0"));
+  globals.roof = (prefs.getString('roof') ?? "30.0");
 
   pubnub.publish(
       'settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
@@ -219,8 +220,8 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.auto_graph),
-            label: 'Grafieken',
+            icon: Icon(Icons.info),
+            label: 'Informatie',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.speed),

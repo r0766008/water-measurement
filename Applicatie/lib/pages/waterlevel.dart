@@ -37,7 +37,8 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
     subscription.messages.listen((envelope) async {
       calculate(double.parse(envelope.payload));
     });
-    _currentRangeValues = RangeValues(double.parse(globals.bufferLow), double.parse(globals.bufferHigh));
+    _currentRangeValues = RangeValues(
+        double.parse(globals.bufferLow), double.parse(globals.bufferHigh));
     super.initState();
   }
 
@@ -207,7 +208,7 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                             height: 10.0,
                           ),
                           const Text(
-                            "Automatich/manueel:",
+                            "Automatisch/manueel:",
                             style: TextStyle(
                               fontSize: 17.0,
                               color: Colors.white,

@@ -2,7 +2,7 @@
     package="com.example.water_measurement">
    <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="water_measurement"
+        android:label="SWiM"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

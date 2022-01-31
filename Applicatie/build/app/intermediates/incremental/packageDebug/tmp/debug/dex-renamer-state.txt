@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-#Mon Jan 31 13:35:30 CET 2022
+#Mon Jan 31 14:00:27 CET 2022
 base.0=C\:\\Users\\vikto\\Documents\\2 ITF - Project\\water-measurement\\Applicatie\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-=======
-#Mon Jan 31 12:47:11 CET 2022
-base.0=D\:\\Project\\water_measurement\\Applicatie\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-path.0=classes.dex
->>>>>>> e1b47b3b43b6e6e91d99c5327e55ff513a95173b
 renamed.0=classes.dex
 path.0=classes.dex

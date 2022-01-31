@@ -44,9 +44,10 @@ class _GraphPageState extends State<GraphPage> {
   void queryForecast() async {
     var request = http.Request(
         'GET',
-        Uri.parse(
-            'https://api.openweathermap.org/data/2.5/forecast?q=' + globals.location + '&appid=' +
-                key));
+        Uri.parse('https://api.openweathermap.org/data/2.5/forecast?q=' +
+            globals.location +
+            '&appid=' +
+            key));
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       String jsonResult = await response.stream.bytesToString();
@@ -183,30 +184,35 @@ class _GraphPageState extends State<GraphPage> {
               margin: const EdgeInsets.only(left: 16, top: 16),
               alignment: Alignment.centerLeft,
               child: Text(
-                'Neerslag: ' + totalRain.toStringAsFixed(1) + " mm",
+                'Neerslag: ' + totalRain.toStringAsFixed(1) + " mm/\u33A1",
                 style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,),
+                  color: Colors.white,
+                  fontSize: 17,
+                ),
               ),
             ),
             Container(
               margin: const EdgeInsets.only(left: 16),
               alignment: Alignment.centerLeft,
               child: Text(
-                'Liter: ' + calculateLiter().toStringAsFixed(1) + " l",
+                'Liter: \u00B1' + calculateLiter().toStringAsFixed(1) + " l",
                 style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,),
+                  color: Colors.white,
+                  fontSize: 17,
+                ),
               ),
             ),
             Container(
               margin: const EdgeInsets.only(left: 16),
               alignment: Alignment.centerLeft,
               child: Text(
-                'Bijkomend percentage: ' + calculatePercentage().toStringAsFixed(1) + " %",
+                "Bijkomend percentage: \u00B1" +
+                    calculatePercentage().toStringAsFixed(1) +
+                    " %",
                 style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 17,),
+                  color: Colors.white,
+                  fontSize: 17,
+                ),
               ),
             ),
           ],

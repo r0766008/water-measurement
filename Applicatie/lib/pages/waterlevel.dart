@@ -37,6 +37,7 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
     subscription.messages.listen((envelope) async {
       calculate(double.parse(envelope.payload));
     });
+    _currentRangeValues = RangeValues(double.parse(globals.bufferLow), double.parse(globals.bufferHigh));
     super.initState();
   }
 

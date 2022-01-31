@@ -21,10 +21,6 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
   final TextEditingController lengthController = TextEditingController();
   final TextEditingController depthController = TextEditingController();
 
-  String width = double.parse(globals.width).toStringAsFixed(1);
-  String length = double.parse(globals.length).toStringAsFixed(1);
-  String depth = double.parse(globals.depth).toStringAsFixed(1);
-
   void save() async {
     var pubnub = PubNub(
         defaultKeyset: Keyset(
@@ -32,15 +28,15 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
             publishKey: 'pub-c-d79f4642-99a1-44fa-9ece-708cde163413',
             uuid: const UUID('p9Mn66G4D5cOmBlSJSFCmSV8uQn2')));
     final SharedPreferences prefs = await _prefs;
-    prefs.setString('width', width);
-    prefs.setString('length', length);
-    prefs.setString('depth', depth);
-    globals.width = width;
-    globals.length = length;
-    globals.depth = depth;
-    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'width|' + width);
-    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'length|' + length);
-    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'depth|' + depth);
+    prefs.setString('width', widthController.text);
+    prefs.setString('length', lengthController.text);
+    prefs.setString('depth', depthController.text);
+    globals.width = widthController.text;
+    globals.length = lengthController.text;
+    globals.depth = depthController.text;
+    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'width|' + widthController.text);
+    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'length|' + lengthController.text);
+    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'depth|' + depthController.text);
     widget.function();
   }
 

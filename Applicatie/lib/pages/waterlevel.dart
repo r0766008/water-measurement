@@ -230,6 +230,12 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                               setState(() {
                                 globals.pumpAutomatic = val1;
                               });
+                              if (val1) {
+                                globals.pumpstatus = false;
+                                pubnub.publish(
+                                    'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+                                    "pumpstate|" + globals.pumpstatus.toString());
+                              }
                               pubnub.publish(
                                   'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
                                   "pumpAutomatic|" +
@@ -262,6 +268,12 @@ class _WaterLevelPageState extends State<WaterLevelPage> {
                               setState(() {
                                 globals.pumpstatus = val;
                               });
+                              if (val) {
+                                globals.pumpAutomatic = false;
+                                pubnub.publish(
+                                    'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+                                    "pumpAutomatic|" + globals.pumpAutomatic.toString());
+                              }
                               pubnub.publish(
                                   'pump-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
                                   "pumpstate|" + globals.pumpstatus.toString());

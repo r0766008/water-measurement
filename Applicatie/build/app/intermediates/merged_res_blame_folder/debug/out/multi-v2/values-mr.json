@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\vikto\\Documents\\2 ITF - Project\\water-measurement\\Applicatie\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-mr\\values-mr.xml",
+            "outputFile": "D:\\Project\\water_measurement\\Applicatie\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-mr\\values-mr.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\vikto\\.gradle\\caches\\transforms-2\\files-2.1\\6f55727569cdc4f2e92c738b6d0b61e3\\jetified-play-services-basement-18.0.0\\res\\values-mr\\values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "195",
-                        "endColumns": "138",
-                        "endOffsets": "333"
-                    },
-                    "to": {
-                        "startLines": "10",
-                        "startColumns": "4",
-                        "startOffsets": "1244",
-                        "endColumns": "142",
-                        "endOffsets": "1382"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\vikto\\.gradle\\caches\\transforms-2\\files-2.1\\8ec5a4192b12a309556d408337153575\\core-1.6.0\\res\\values-mr\\values-mr.xml",
+                    "source": "C:\\Users\\codyv\\.gradle\\caches\\transforms-2\\files-2.1\\8ec5a4192b12a309556d408337153575\\core-1.6.0\\res\\values-mr\\values-mr.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -38,7 +21,24 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\vikto\\.gradle\\caches\\transforms-2\\files-2.1\\955be42cb0286a736ff6d4ee15b76099\\jetified-firebase-messaging-23.0.0\\res\\values-mr\\values.xml",
+                    "source": "C:\\Users\\codyv\\.gradle\\caches\\transforms-2\\files-2.1\\6f55727569cdc4f2e92c738b6d0b61e3\\jetified-play-services-basement-18.0.0\\res\\values-mr\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "195",
+                        "endColumns": "138",
+                        "endOffsets": "333"
+                    },
+                    "to": {
+                        "startLines": "10",
+                        "startColumns": "4",
+                        "startOffsets": "1244",
+                        "endColumns": "142",
+                        "endOffsets": "1382"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\codyv\\.gradle\\caches\\transforms-2\\files-2.1\\955be42cb0286a736ff6d4ee15b76099\\jetified-firebase-messaging-23.0.0\\res\\values-mr\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",
@@ -55,7 +55,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\vikto\\.gradle\\caches\\transforms-2\\files-2.1\\0813e45a0b3806629b40dbeb70c75a60\\jetified-play-services-base-17.1.0\\res\\values-mr\\values.xml",
+                    "source": "C:\\Users\\codyv\\.gradle\\caches\\transforms-2\\files-2.1\\0813e45a0b3806629b40dbeb70c75a60\\jetified-play-services-base-17.1.0\\res\\values-mr\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",

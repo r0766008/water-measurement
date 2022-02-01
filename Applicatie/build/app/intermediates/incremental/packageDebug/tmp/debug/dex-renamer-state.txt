@@ -1,4 +1,0 @@
-#Tue Feb 01 08:43:04 CET 2022
-base.0=D\:\\Project\\water_measurement\\Applicatie\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-path.0=classes.dex
-renamed.0=classes.dex

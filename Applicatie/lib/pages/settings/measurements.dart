@@ -34,9 +34,12 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
     globals.width = widthController.text;
     globals.length = lengthController.text;
     globals.depth = depthController.text;
-    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'width|' + widthController.text);
-    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'length|' + lengthController.text);
-    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2', 'depth|' + depthController.text);
+    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+        'width|' + widthController.text);
+    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+        'length|' + lengthController.text);
+    pubnub.publish('settings-p9Mn66G4D5cOmBlSJSFCmSV8uQn2',
+        'depth|' + depthController.text);
     widget.function();
   }
 
@@ -100,7 +103,7 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
                             controller: widthController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            decoration: getTextFieldDecoration('Breedte'),
+                            decoration: getTextFieldDecoration('Breedte (cm)'),
                             validator: (value) => value!.isEmpty
                                 ? 'Vul de breedte in'
                                 : (RegExp(r'^[0-9]+(,[0-9]{3})*(\.[0-9]+)*$')
@@ -120,7 +123,7 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
                             controller: lengthController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            decoration: getTextFieldDecoration('Lengte'),
+                            decoration: getTextFieldDecoration('Lengte (cm)'),
                             validator: (value) => value!.isEmpty
                                 ? 'Vul de lengte in'
                                 : (RegExp(r'^[0-9]+(,[0-9]{3})*(\.[0-9]+)*$')
@@ -140,7 +143,7 @@ class _MeasurementsPageState extends State<MeasurementsPage> {
                             controller: depthController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            decoration: getTextFieldDecoration('Diepte'),
+                            decoration: getTextFieldDecoration('Diepte (cm)'),
                             validator: (value) => value!.isEmpty
                                 ? 'Vul de diepte in'
                                 : (RegExp(r'^[0-9]+(,[0-9]{3})*(\.[0-9]+)*$')
